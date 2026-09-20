@@ -21,6 +21,11 @@ const controller = new FamilyController(service);
 // Routes
 router.use(requireAuth);
 
+router.get('/me', controller.getMyFamily);
+router.get('/:id', controller.getFamily);
+router.get('/:id/members', controller.getFamilyMembers);
+router.get('/:id/life-events', controller.getLifeEvents);
+
 router.post('/', validateRequest(CreateFamilySchema), controller.createFamily);
 router.put('/:id', validateRequest(UpdateFamilySchema), controller.updateFamily);
 router.post('/:id/members', validateRequest(CreateMemberSchema.omit({ familyId: true })), controller.addMember);

@@ -18,6 +18,11 @@ const controller = new ApplicationController(service);
 
 router.use(requireAuth);
 
+// Read routes
+router.get('/', controller.listApplications);
+router.get('/:id', controller.getApplication);
+
+// Write routes
 router.post('/', validateRequest(CreateApplicationSchema), controller.initiateApplication);
 router.patch('/:id/status', validateRequest(UpdateApplicationStatusSchema), controller.updateApplicationStatus);
 router.post('/redirect', validateRequest(RecordRedirectSchema), controller.recordRedirect);

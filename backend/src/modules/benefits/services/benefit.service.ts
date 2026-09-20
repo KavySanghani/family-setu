@@ -5,6 +5,14 @@ import { RecordBenefitSchema } from '../schemas/benefit.schema';
 export class BenefitService {
   constructor(private readonly repository: BenefitRepository) {}
 
+  async listBenefits(filters?: { familyId?: string; memberId?: string; schemeId?: string }) {
+    return this.repository.listBenefits(filters);
+  }
+
+  async getBenefit(id: string) {
+    return this.repository.getBenefitById(id);
+  }
+
   /**
    * Records a benefit distribution in the system.
    */

@@ -8,8 +8,17 @@ export class ApplicationRepository {
       .select('*')
       .eq('idempotency_key', key)
       .single();
-    
     return application || null;
+  }
+
+  async listApplications(filters?: { familyId?: string; schemeId?: string; status?: string }): Promise<any[]> {
+    let query = supabase.from('scheme_application').select('*').order('created_at', { ascending: false });
+    if (filters?.familyId) query = query.eq('family_id', filters.familyId);
+    if (filters?.schemeId) query = query.eq('scheme_id', filters.schemeId);
+    if (filters?.status) query = query.eq('status', filters.status);
+    const { data, error } = await query;
+    if (error) throw AppError.internalError(`Failed to list applications: ${error.message}`);
+    return data || [];
   }
 
   async createApplication(data: any): Promise<any> {
@@ -20,7 +29,6 @@ export class ApplicationRepository {
       .single();
 
     if (error) {
-      // In a real app we might catch unique constraint violations and map to AppError.conflict
       throw AppError.internalError(`Failed to create application: ${error.message}`);
     }
     return application;
@@ -45,9 +53,8 @@ export class ApplicationRepository {
       .update(updateData)
       .eq('id', id);
 
-    // If implementing optimistic concurrency on application state
     if (expectedVersion) {
-      query.eq('profile_version', expectedVersion); // Using profile_version as placeholder for state version if defined
+      query.eq('profile_version', expectedVersion);
     }
 
     const { data: application, error } = await query.select().single();

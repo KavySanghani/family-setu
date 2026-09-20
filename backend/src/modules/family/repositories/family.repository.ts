@@ -65,6 +65,19 @@ export class FamilyRepository {
     return member;
   }
 
+  async getFamilyMembers(familyId: string): Promise<any[]> {
+    const { data: members, error } = await supabase
+      .from('family_member')
+      .select('*')
+      .eq('family_id', familyId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      throw AppError.internalError(`Failed to fetch family members: ${error.message}`);
+    }
+    return members || [];
+  }
+
   async recordLifeEvent(data: any): Promise<any> {
     const { data: event, error } = await supabase
       .from('life_event')
@@ -76,5 +89,32 @@ export class FamilyRepository {
       throw AppError.internalError(`Failed to record life event: ${error.message}`);
     }
     return event;
+  }
+
+  async getLifeEvents(familyId: string): Promise<any[]> {
+    const { data: events, error } = await supabase
+      .from('life_event')
+      .select('*')
+      .eq('family_id', familyId)
+      .order('event_date', { ascending: false });
+
+    if (error) {
+      throw AppError.internalError(`Failed to fetch life events: ${error.message}`);
+    }
+    return events || [];
+  }
+
+  async linkUserToFamily(userId: string, familyId: string): Promise<void> {
+    const { error } = await supabase
+      .from('user_scope')
+      .insert([{
+        user_id: userId,
+        scope_type: 'FAMILY',
+        scope_value: familyId
+      }]);
+
+    if (error) {
+      throw AppError.internalError(`Failed to link user to family: ${error.message}`);
+    }
   }
 }

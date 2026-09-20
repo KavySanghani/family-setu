@@ -5,41 +5,37 @@ import { CreateSchemeSchema, CreateSchemeVersionSchema } from '../schemas/scheme
 export class SchemeService {
   constructor(private readonly repository: SchemeRepository) {}
 
-  /**
-   * Creates a new scheme in the catalogue.
-   */
-  async createScheme(actorId: string, data: any) {
-    const parsedData = CreateSchemeSchema.parse(data);
+  async listSchemes(filters?: { category?: string; status?: string; search?: string }) {
+    return this.repository.listSchemes(filters);
+  }
 
-    const scheme = await this.repository.createScheme({
-      ...parsedData,
-      status: 'ACTIVE'
-    });
+  async getSchemeById(id: string) {
+    return this.repository.getSchemeById(id);
+  }
 
-    await AuditService.logAction({
-      actorId,
-      action: 'CREATE_SCHEME',
-      entityType: 'scheme',
-      entityId: scheme.id,
-      newData: scheme
-    });
+  async getSchemeDetails(id: string) {
+    const scheme = await this.repository.getSchemeById(id);
+    const versions = await this.repository.listSchemeVersions(id);
+    return { ...scheme, versions };
+  }
 
-    await AuditService.emitEvent({
-      eventType: 'SCHEME_CREATED',
-      payload: scheme,
-      entityType: 'scheme',
-      entityId: scheme.id
-    });
-
+  async updateScheme(actorId: string, id: string, data: any) {
+    const old = await this.repository.getSchemeById(id);
+    const scheme = await this.repository.updateScheme(id, data);
+    await AuditService.logAction({ actorId, action: 'UPDATE_SCHEME', entityType: 'scheme', entityId: id, oldData: old, newData: scheme });
     return scheme;
   }
 
-  /**
-   * Adds a new version (rules/benefits) to an existing scheme.
-   */
+  async createScheme(actorId: string, data: any) {
+    const parsedData = CreateSchemeSchema.parse(data);
+    const scheme = await this.repository.createScheme({ ...parsedData, status: 'ACTIVE' });
+    await AuditService.logAction({ actorId, action: 'CREATE_SCHEME', entityType: 'scheme', entityId: scheme.id, newData: scheme });
+    await AuditService.emitEvent({ eventType: 'SCHEME_CREATED', payload: scheme, entityType: 'scheme', entityId: scheme.id });
+    return scheme;
+  }
+
   async createSchemeVersion(actorId: string, data: any) {
     const parsedData = CreateSchemeVersionSchema.parse(data);
-
     const version = await this.repository.createSchemeVersion({
       scheme_id: parsedData.schemeId,
       rule_definition: parsedData.ruleDefinition,
@@ -48,28 +44,11 @@ export class SchemeService {
       effective_from: parsedData.effectiveFrom,
       effective_to: parsedData.effectiveTo
     });
-
-    await AuditService.logAction({
-      actorId,
-      action: 'CREATE_SCHEME_VERSION',
-      entityType: 'scheme_version',
-      entityId: version.id,
-      newData: version
-    });
-
-    await AuditService.emitEvent({
-      eventType: 'SCHEME_VERSION_CREATED',
-      payload: version,
-      entityType: 'scheme_version',
-      entityId: version.id
-    });
-
+    await AuditService.logAction({ actorId, action: 'CREATE_SCHEME_VERSION', entityType: 'scheme_version', entityId: version.id, newData: version });
+    await AuditService.emitEvent({ eventType: 'SCHEME_VERSION_CREATED', payload: version, entityType: 'scheme_version', entityId: version.id });
     return version;
   }
 
-  /**
-   * Resolves the active version of a scheme for a given date.
-   */
   async getEffectiveVersion(schemeId: string, evaluationDate: string = new Date().toISOString().split('T')[0]) {
     return this.repository.getEffectiveVersion(schemeId, evaluationDate);
   }

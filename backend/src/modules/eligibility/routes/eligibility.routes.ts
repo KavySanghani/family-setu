@@ -14,6 +14,9 @@ const controller = new EligibilityController(service);
 
 router.use(requireAuth);
 
+router.get('/', controller.listEvaluations);
+router.get('/:id', controller.getEvaluation);
+router.get('/family/:familyId', controller.getFamilyEvaluations);
 router.post('/evaluations', validateRequest(StoreEvaluationResultSchema), controller.storeEvaluationResult);
 
 export default router;

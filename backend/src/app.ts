@@ -16,6 +16,8 @@ import eligibilityRoutes from './modules/eligibility/routes/eligibility.routes';
 import benefitRoutes from './modules/benefits/routes/benefit.routes';
 import verificationRoutes from './modules/verification/routes/verification.routes';
 import dataQualityRoutes from './modules/data-quality/routes/data-quality.routes';
+import notificationRoutes from './modules/notifications/routes/notification.routes';
+import dashboardRoutes from './modules/dashboard/routes/dashboard.routes';
 
 const app = express();
 
@@ -38,6 +40,8 @@ app.use('/api/v1/eligibility', eligibilityRoutes);
 app.use('/api/v1/benefits', benefitRoutes);
 app.use('/api/v1/verification', verificationRoutes);
 app.use('/api/v1/data-quality', dataQualityRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
 
 // Fallback for 404
 app.use((req, res, next) => {

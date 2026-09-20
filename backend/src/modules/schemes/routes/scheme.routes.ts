@@ -15,10 +15,16 @@ const controller = new SchemeController(service);
 
 router.use(requireAuth);
 
-router.post('/', validateRequest(CreateSchemeSchema), controller.createScheme);
-router.post('/versions', validateRequest(CreateSchemeVersionSchema), controller.createSchemeVersion);
+// Read routes
+router.get('/', controller.listSchemes);
+router.get('/:id', controller.getScheme);
 router.get('/:id/effective', validateQuery(z.object({
   evaluationDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional()
 })), controller.getEffectiveVersion);
+
+// Write routes
+router.post('/', validateRequest(CreateSchemeSchema), controller.createScheme);
+router.put('/:id', controller.updateScheme);
+router.post('/versions', validateRequest(CreateSchemeVersionSchema), controller.createSchemeVersion);
 
 export default router;

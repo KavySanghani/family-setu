@@ -14,6 +14,8 @@ const controller = new BenefitController(service);
 
 router.use(requireAuth);
 
+router.get('/', controller.listBenefits);
+router.get('/:id', controller.getBenefit);
 router.post('/', validateRequest(RecordBenefitSchema), controller.recordBenefit);
 
 export default router;

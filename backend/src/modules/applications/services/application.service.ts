@@ -10,6 +10,14 @@ import {
 export class ApplicationService {
   constructor(private readonly repository: ApplicationRepository) {}
 
+  async listApplications(filters?: { familyId?: string; schemeId?: string; status?: string }) {
+    return this.repository.listApplications(filters);
+  }
+
+  async getApplication(id: string) {
+    return this.repository.getApplicationById(id);
+  }
+
   /**
    * Initiates a tracking record for a new application.
    * Ensures idempotency to prevent duplicate submissions from retries.
