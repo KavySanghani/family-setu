@@ -13,6 +13,14 @@ export class FamilyController {
     }
   };
 
+  listFamilies = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search = typeof req.query.search === 'string' ? req.query.search : undefined;
+      const families = await this.service.listFamilies(req.user!.scopes, search);
+      res.status(200).json({ data: families });
+    } catch (err) { next(err); }
+  };
+
   getFamily = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     try {
       const family = await this.service.getFamily(req.user!.scopes, req.params.id);
@@ -35,6 +43,15 @@ export class FamilyController {
     try {
       const events = await this.service.getLifeEvents(req.user!.scopes, req.params.id);
       res.status(200).json({ data: events });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getBeneficiary360 = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+    try {
+      const view = await this.service.getBeneficiary360(req.user!.scopes, req.params.id);
+      res.status(200).json({ data: view });
     } catch (err) {
       next(err);
     }

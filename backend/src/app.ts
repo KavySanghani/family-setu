@@ -18,6 +18,7 @@ import verificationRoutes from './modules/verification/routes/verification.route
 import dataQualityRoutes from './modules/data-quality/routes/data-quality.routes';
 import notificationRoutes from './modules/notifications/routes/notification.routes';
 import dashboardRoutes from './modules/dashboard/routes/dashboard.routes';
+import assistantRoutes from './modules/assistant/routes/assistant.routes';
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/v1/verification', verificationRoutes);
 app.use('/api/v1/data-quality', dataQualityRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/assistant', assistantRoutes);
 
 // Fallback for 404
 app.use((req, res, next) => {

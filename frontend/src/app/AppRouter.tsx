@@ -12,6 +12,8 @@ import { ApplicationsPage } from '../features/applications/pages/ApplicationsPag
 import { BenefitsPage } from '../features/benefits/pages/BenefitsPage';
 import { NotificationsPage } from '../features/notifications/pages/NotificationsPage';
 import { OfficerDashboardPage } from '../features/officer/pages/OfficerDashboardPage';
+import { Beneficiary360Page } from '../features/officer/pages/Beneficiary360Page';
+import { OfficerFamiliesPage } from '../features/officer/pages/OfficerFamiliesPage';
 import { SchemeFinderPage } from '../features/eligibility/pages/SchemeFinderPage';
 
 export const AppRouter: React.FC = () => {
@@ -34,6 +36,8 @@ export const AppRouter: React.FC = () => {
               <Route path="/benefits" element={<BenefitsPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/officer" element={<OfficerDashboardPage />} />
+              <Route path="/officer/families" element={<OfficerFamiliesPage />} />
+              <Route path="/officer/families/:familyId" element={<Beneficiary360Page />} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Route>

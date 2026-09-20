@@ -101,16 +101,20 @@ export class ApplicationService {
    */
   async recordRedirect(actorId: string, data: any) {
     const parsedData = RecordRedirectSchema.parse(data);
+    const currentApp = await this.repository.getApplicationById(parsedData.applicationId);
 
     const redirect = await this.repository.recordRedirectEvent({
       application_id: parsedData.applicationId,
       user_id: actorId,
       target_url: parsedData.targetUrl,
+      family_id: currentApp.family_id,
+      member_id: currentApp.member_id,
+      scheme_id: currentApp.scheme_id,
+      destination_url: parsedData.targetUrl,
       redirected_at: new Date().toISOString()
     });
 
     // Optionally transition application to REDIRECTED if it's currently INITIATED
-    const currentApp = await this.repository.getApplicationById(parsedData.applicationId);
     if (currentApp.status === 'INITIATED') {
       await this.updateApplicationStatus(actorId, currentApp.id, { status: 'REDIRECTED' });
     }

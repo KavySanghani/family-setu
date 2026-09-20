@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { z } from 'zod';
+import { requireAuth } from '../../../shared/middleware/auth';
+import { validateRequest } from '../../../shared/middleware/validateRequest';
+import { AssistantController } from '../controllers/assistant.controller';
+import { AssistantService } from '../services/assistant.service';
+const router = Router();
+const controller = new AssistantController(new AssistantService());
+router.use(requireAuth);
+router.post('/ask', validateRequest(z.object({ familyId: z.string().uuid(), question: z.string().min(3).max(500) })), controller.ask);
+export default router;

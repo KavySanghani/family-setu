@@ -22,6 +22,13 @@ export class FamilyService {
     return this.repository.getFamilyById(familyScope.value);
   }
 
+  async listFamilies(scopes: { type: string; value: string }[], search?: string) {
+    if (!scopes.some(scope => scope.type === 'DEPARTMENT')) {
+      throw AppError.forbidden('Officer department scope is required.');
+    }
+    return this.repository.listFamilies(search);
+  }
+
   /**
    * Retrieves a family by ID, enforcing authorization.
    */
@@ -46,6 +53,11 @@ export class FamilyService {
     return this.repository.getLifeEvents(familyId);
   }
 
+  async getBeneficiary360(scopes: { type: string; value: string }[], familyId: string) {
+    this.assertFamilyAccess(scopes, familyId);
+    return this.repository.getBeneficiary360(familyId);
+  }
+
   /**
    * Creates a new family and emits the creation event.
    */
@@ -61,7 +73,8 @@ export class FamilyService {
     const family = await this.repository.createFamily({
       ...parsedData,
       family_id: generatedFamilyId,
-      status: 'VERIFIED', // Initial state for prototype
+      status: 'ACTIVE',
+      verification_status: 'UNVERIFIED',
       profile_version: 1
     });
 
