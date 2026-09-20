@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { FamilyController } from '../controllers/family.controller';
 import { FamilyService } from '../services/family.service';
 import { FamilyRepository } from '../repositories/family.repository';
-import { authBoundary } from '../../../shared/middleware/authBoundary';
+import { requireAuth } from '../../../shared/middleware/auth';
 import { validateRequest } from '../../../shared/middleware/validateRequest';
 import { 
   CreateFamilySchema, 
@@ -19,7 +19,7 @@ const service = new FamilyService(repository);
 const controller = new FamilyController(service);
 
 // Routes
-router.use(authBoundary);
+router.use(requireAuth);
 
 router.post('/', validateRequest(CreateFamilySchema), controller.createFamily);
 router.put('/:id', validateRequest(UpdateFamilySchema), controller.updateFamily);

@@ -6,7 +6,7 @@ export class SchemeController {
 
   createScheme = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const scheme = await this.service.createScheme(actorId, req.body);
       res.status(201).json({ data: scheme });
     } catch (err) {
@@ -16,7 +16,7 @@ export class SchemeController {
 
   createSchemeVersion = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const version = await this.service.createSchemeVersion(actorId, req.body);
       res.status(201).json({ data: version });
     } catch (err) {

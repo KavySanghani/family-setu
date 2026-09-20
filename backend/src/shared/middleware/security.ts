@@ -8,7 +8,7 @@ export const configureSecurity = () => {
     cors({
       origin: process.env.CORS_ORIGIN || '*', // Development default
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Actor-ID']
+      allowedHeaders: ['Content-Type', 'Authorization']
     })
   ];
 };

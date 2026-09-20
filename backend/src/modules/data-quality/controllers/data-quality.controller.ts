@@ -6,7 +6,7 @@ export class DataQualityController {
 
   flagDuplicate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const duplicate = await this.service.flagDuplicate(actorId, req.body);
       res.status(201).json({ data: duplicate });
     } catch (err) {
@@ -16,7 +16,7 @@ export class DataQualityController {
 
   resolveIssue = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const { id } = req.params;
       const issue = await this.service.resolveIssue(actorId, id, req.body);
       res.status(200).json({ data: issue });

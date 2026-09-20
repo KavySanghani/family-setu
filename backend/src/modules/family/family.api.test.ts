@@ -1,6 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
+import { Request, Response, NextFunction } from 'express';
 import app from '../../app';
+
+vi.mock('../../shared/middleware/auth', () => {
+  return {
+    requireAuth: vi.fn((req: Request, res: Response, next: NextFunction) => {
+      const token = req.headers.authorization;
+      if (!token) return res.status(401).json({ error: { code: 'UNAUTHORIZED', message: 'Auth required' } });
+      req.user = { id: 'test-actor', authUserId: 'auth-123', email: 'test@example.com', fullName: 'Test', departmentId: null, isActive: true, roles: [], permissions: [], scopes: [] };
+      next();
+    })
+  };
+});
 
 vi.mock('./repositories/family.repository', () => {
   return {
@@ -20,7 +32,7 @@ vi.mock('../../shared/utils/audit', () => {
 });
 
 describe('Family API', () => {
-  it('should reject requests without auth boundary header', async () => {
+  it('should reject requests without authorization header', async () => {
     const res = await request(app)
       .post('/api/v1/families')
       .send({});
@@ -31,7 +43,7 @@ describe('Family API', () => {
   it('should reject invalid input via Zod middleware', async () => {
     const res = await request(app)
       .post('/api/v1/families')
-      .set('x-actor-id', 'test-actor')
+      .set('Authorization', 'Bearer mock-token')
       .send({ addressLine1: '' }); // Missing required fields
       
     expect(res.status).toBe(422); // Validation error code mapped in AppError -> status
@@ -41,7 +53,7 @@ describe('Family API', () => {
   it('should create family on valid input', async () => {
     const res = await request(app)
       .post('/api/v1/families')
-      .set('x-actor-id', 'test-actor')
+      .set('Authorization', 'Bearer mock-token')
       .send({ 
         headOfFamilyId: '22222222-2222-4222-a222-222222222222', 
         addressLine1: '123 Test St',

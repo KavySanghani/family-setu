@@ -6,7 +6,7 @@ export class FamilyController {
 
   createFamily = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const family = await this.service.createFamily(actorId, req.body);
       res.status(201).json({ data: family });
     } catch (err) {
@@ -16,7 +16,7 @@ export class FamilyController {
 
   updateFamily = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const { id } = req.params;
       const family = await this.service.updateFamily(actorId, id, req.body);
       res.status(200).json({ data: family });
@@ -27,7 +27,7 @@ export class FamilyController {
 
   addMember = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const { id } = req.params;
       const member = await this.service.addMember(actorId, { ...req.body, familyId: id });
       res.status(201).json({ data: member });
@@ -38,7 +38,7 @@ export class FamilyController {
 
   recordLifeEvent = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const { id } = req.params;
       const event = await this.service.recordLifeEvent(actorId, { ...req.body, familyId: id });
       res.status(201).json({ data: event });

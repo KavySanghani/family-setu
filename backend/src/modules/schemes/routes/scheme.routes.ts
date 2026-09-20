@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { SchemeController } from '../controllers/scheme.controller';
 import { SchemeService } from '../services/scheme.service';
 import { SchemeRepository } from '../repositories/scheme.repository';
-import { authBoundary } from '../../../shared/middleware/authBoundary';
+import { requireAuth } from '../../../shared/middleware/auth';
 import { validateRequest, validateQuery } from '../../../shared/middleware/validateRequest';
 import { CreateSchemeSchema, CreateSchemeVersionSchema } from '../schemas/scheme.schema';
 import { z } from 'zod';
@@ -13,7 +13,7 @@ const repository = new SchemeRepository();
 const service = new SchemeService(repository);
 const controller = new SchemeController(service);
 
-router.use(authBoundary);
+router.use(requireAuth);
 
 router.post('/', validateRequest(CreateSchemeSchema), controller.createScheme);
 router.post('/versions', validateRequest(CreateSchemeVersionSchema), controller.createSchemeVersion);

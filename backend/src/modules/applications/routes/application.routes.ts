@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ApplicationController } from '../controllers/application.controller';
 import { ApplicationService } from '../services/application.service';
 import { ApplicationRepository } from '../repositories/application.repository';
-import { authBoundary } from '../../../shared/middleware/authBoundary';
+import { requireAuth } from '../../../shared/middleware/auth';
 import { validateRequest } from '../../../shared/middleware/validateRequest';
 import { 
   CreateApplicationSchema, 
@@ -16,7 +16,7 @@ const repository = new ApplicationRepository();
 const service = new ApplicationService(repository);
 const controller = new ApplicationController(service);
 
-router.use(authBoundary);
+router.use(requireAuth);
 
 router.post('/', validateRequest(CreateApplicationSchema), controller.initiateApplication);
 router.patch('/:id/status', validateRequest(UpdateApplicationStatusSchema), controller.updateApplicationStatus);

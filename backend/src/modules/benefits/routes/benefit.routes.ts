@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { BenefitController } from '../controllers/benefit.controller';
 import { BenefitService } from '../services/benefit.service';
 import { BenefitRepository } from '../repositories/benefit.repository';
-import { authBoundary } from '../../../shared/middleware/authBoundary';
+import { requireAuth } from '../../../shared/middleware/auth';
 import { validateRequest } from '../../../shared/middleware/validateRequest';
 import { RecordBenefitSchema } from '../schemas/benefit.schema';
 
@@ -12,7 +12,7 @@ const repository = new BenefitRepository();
 const service = new BenefitService(repository);
 const controller = new BenefitController(service);
 
-router.use(authBoundary);
+router.use(requireAuth);
 
 router.post('/', validateRequest(RecordBenefitSchema), controller.recordBenefit);
 

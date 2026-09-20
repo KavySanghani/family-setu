@@ -6,7 +6,7 @@ export class BenefitController {
 
   recordBenefit = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actorId = (req as any).user.id;
+      const actorId = req.user!.id;
       const benefit = await this.service.recordBenefit(actorId, req.body);
       res.status(201).json({ data: benefit });
     } catch (err) {
