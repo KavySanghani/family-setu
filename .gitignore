@@ -14,6 +14,8 @@ dist/
 build/
 out/
 lib/
+!backend/src/lib/
+!backend/src/lib/supabase.ts
 
 # Environment variables
 .env
