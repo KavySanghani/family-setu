@@ -4,7 +4,16 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
 
 if (!supabaseUrl || !supabaseSecretKey) {
-  throw new Error('Missing required Supabase backend environment variables.');
+  throw new Error('SUPABASE_URL and SUPABASE_SECRET_KEY are required');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseSecretKey);
+export const supabase = createClient(
+  supabaseUrl,
+  supabaseSecretKey,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
+);
