@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { FamilyService } from './family.service';
 import { FamilyRepository } from '../repositories/family.repository';
 import { AppError } from '../../../shared/errors/AppError';
@@ -10,10 +10,10 @@ vi.mock('../../../shared/utils/audit');
 
 describe('FamilyService', () => {
   let service: FamilyService;
-  let repository: vi.Mocked<FamilyRepository>;
+  let repository: Mocked<FamilyRepository>;
 
   beforeEach(() => {
-    repository = new FamilyRepository() as vi.Mocked<FamilyRepository>;
+    repository = new FamilyRepository() as Mocked<FamilyRepository>;
     service = new FamilyService(repository);
     vi.clearAllMocks();
   });

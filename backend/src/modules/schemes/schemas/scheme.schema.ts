@@ -13,8 +13,8 @@ export const CreateSchemeSchema = z.object({
 
 export const CreateSchemeVersionSchema = z.object({
   schemeId: z.string().uuid(),
-  ruleDefinition: z.record(z.any()), // JSON structure defining rules
-  benefitsDefinition: z.record(z.any()), // JSON structure defining benefits
+  ruleDefinition: z.record(z.string(), z.any()), // JSON structure defining rules
+  benefitsDefinition: z.record(z.string(), z.any()), // JSON structure defining benefits
   requiredDocuments: z.array(z.string()).default([]),
   effectiveFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format must be YYYY-MM-DD"),
   effectiveTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),

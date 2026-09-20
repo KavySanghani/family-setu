@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { SchemeService } from './scheme.service';
 import { SchemeRepository } from '../repositories/scheme.repository';
 import { AuditService } from '../../../shared/utils/audit';
@@ -8,10 +8,10 @@ vi.mock('../../../shared/utils/audit');
 
 describe('SchemeService', () => {
   let service: SchemeService;
-  let repository: vi.Mocked<SchemeRepository>;
+  let repository: Mocked<SchemeRepository>;
 
   beforeEach(() => {
-    repository = new SchemeRepository() as vi.Mocked<SchemeRepository>;
+    repository = new SchemeRepository() as Mocked<SchemeRepository>;
     service = new SchemeService(repository);
     vi.clearAllMocks();
   });

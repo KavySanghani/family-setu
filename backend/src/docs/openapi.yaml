@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: FamilySetu API
+  description: API for managing FamilySetu citizen records and schemes.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: /api/v1
+    description: Current API version
+components:
+  securitySchemes:
+    actorIdHeader:
+      type: apiKey
+      in: header
+      name: X-Actor-ID
+      description: Mock authentication header to establish user context.
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            requestId:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          example: healthy
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '400':
+          description: Bad Request
+  /ready:
+    get:
+      summary: Readiness check
+      operationId: getReady
+      security: []
+      responses:
+        '200':
+          description: Ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '400':
+          description: Bad Request
+  /families:
+    post:
+      summary: Create a new family profile
+      operationId: createFamily
+      security:
+        - actorIdHeader: []
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /schemes:
+    post:
+      summary: Create a scheme
+      operationId: createScheme
+      security:
+        - actorIdHeader: []
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
